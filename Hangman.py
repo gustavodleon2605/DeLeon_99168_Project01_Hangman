@@ -3,28 +3,37 @@ from graphics import *
 def generateGame():
     pass
 
-def drawHangman(win):
-    #Head
-    head = Circle(Point(175,250),20)
-    head.draw(win)
+def drawHangman(win,wrongAnswers):
     
-    #Body
-    body = Line(Point(175,270), Point(175,350))
-    body.draw(win)
-    
-    #Legs
-    leg1 = Line(Point(175,350), Point(160,370))
-    leg1.draw(win)
-    
-    leg2 = Line(Point(175,350), Point(190,370))
-    leg2.draw(win)
-    
-    #Arms
-    arm1 = Line(body.getCenter(), Point(150,290))
-    arm1.draw(win)
-    
-    arm2 = Line(body.getCenter(), Point(200,290))
-    arm2.draw(win)
+    if wrongAnswers == 1:
+        #Head
+        head = Circle(Point(175,250),20)
+        head.draw(win)
+        
+    if wrongAnswers == 2:
+        #Body
+        body = Line(Point(175,270), Point(175,350))
+        body.draw(win)
+        
+    if wrongAnswers == 3:
+        #Leg 1
+        leg1 = Line(Point(175,350), Point(160,370))
+        leg1.draw(win)
+        
+    if wrongAnswers == 4:
+        #Leg 2
+        leg2 = Line(Point(175,350), Point(190,370))
+        leg2.draw(win)
+
+    if wrongAnswers == 5:
+        #Arm 1
+        arm1 = Line(Point(175, 310), Point(150,290))
+        arm1.draw(win)
+        
+    if wrongAnswers == 6:
+        #Arm 2
+        arm2 = Line(Point(175, 310), Point(200,290))
+        arm2.draw(win)
     
 def drawHang(win):
     hangBase =  Line(Point(75,400), Point(200,400))
@@ -84,66 +93,101 @@ def writeLetterIn(letterIdx, guess, win):
         letter = Text(Point(680,238), guess)
         letter.setSize(25)
         letter.draw(win)
-        
-def main():
+
+def checkKeyEntered(words_to_guess, game_rounds, guess):
     
-    words_to_guess = ["python","border","image","film","promise","kids","lungs","doll","rhyme","damage","plants"]
-    game_rounds = 0
-    keep_playing = True
+    letter_is = False
+    idx = 0
     
-    letters = ["J","k"]
-    win = GraphWin('Hangman', 800, 600)    
+    for letterIdx in range(len(words_to_guess[game_rounds])):
+        if guess == words_to_guess[game_rounds][letterIdx]:
+            print(guess)
+            print(letterIdx)
+            idx = letterIdx
+            letter_is = True
+            
+    return letter_is, idx
+
+def wrongGuess(guess,wrongAnswers,win):
     
-    
-    #for i in range(11):
-     #   word = words_to_guess[i]
-      #  print(len(word))
-    
-    while game_rounds != 11 or keep_playing:
-        
-        message = Text(Point(400,100), "Enter a key on your keyboard of the letter you think that is in the word")
-        message.setSize(15)
+    if wrongAnswers == 1:
+        message = Text(Point(355,370), "Wrong guess: ")
+        message.setSize(16)
         message.setTextColor('black')
         message.draw(win)
+        x = 410
+    
+    wrongLetter = Text(Point(x,370), guess)
+    wrongLetter.setSize(16)
+    wrongLetter.setTextColor('black')
+    wrongLetter.draw(win)
+    x += 5
+        
+def getAnswer(words_to_guess,game_rounds,win): #en un while mientras wrongAnswer != 6
+    
+    wrongAnswers = 0
+    correctAnswers = 0
+    
+    while wrongAnswers != 6 or correctAnswers != len(words_to_guess[game_rounds]): 
         
         guess = win.getKey()
         print(guess)
 
-        #hacer el check en una funcnion y que entonces devuelva true or false para entonces
-        #si es falso que pueda añadir al count de las falsas y sino pues que haga lo de true
+        is_letter, idx = checkKeyEntered(words_to_guess, game_rounds, guess)
         
-        for letterIdx in range(len(words_to_guess[game_rounds])):
-            if guess == words_to_guess[game_rounds][letterIdx]:
-                message = Text(Point(500,300), "Congratulations! The letter entered is in the word to guess!")
-                message.setSize(12)
-                message.setTextColor('green')
-                message.draw(win)
-                print(guess)
-                print(letterIdx)
-                idx = letterIdx
-                
-        
-        
-        writeLetterIn(idx, guess, win)
-            #else:
-             #   message = Text(Point(500,300), "Sorry! The letter entered is not the word to guess!")
-              #  message.setSize(12)
-               # message.setTextColor('red')
-                #message.draw(win)
-
-        message = Text(Point(400,50), "HANGMAN!")
-        message.setSize(35)
-        message.setTextColor('Grey')
-        message.setStyle('bold')
+        message = Text(Point(500,300), "Press a letter key!")
+        message.setSize(12)
+        message.setTextColor('green')
         message.draw(win)
 
+        if is_letter == True:
+            correctAnswers += 1
+            print('correctAnswers:',correctAnswers)
+            message.setText('Congratulations! The letter entered is in the word to guess!')
+            message.setTextColor('green')
+            #message.draw(win)
 
-        wordLines(words_to_guess, game_rounds, win)
+            writeLetterIn(idx, guess, win)
 
-        drawHang(win)
+        else:
+            wrongAnswers += 1
+            drawHangman(win,wrongAnswers)
+            wrongGuess(guess,wrongAnswers,win)
+            message.setText('Sorry! The letter entered is not the word to guess!')
+            message.setTextColor('red')
+            #message.draw(win)
+                
 
-        drawHangman(win)
+def main():
+    
+    words_to_guess = ["python","border","image","film","promise","kids","lungs","doll","rhyme","damage","plants"]
+    game_rounds = 0
+    
+    keep_playing = True
+    
+    win = GraphWin('Hangman', 800, 600)    
+    
+    message = Text(Point(400,60), "HANGMAN!")
+    message.setSize(35)
+    message.setTextColor('Grey')
+    message.setStyle('bold')
+    message.draw(win)
+    
+    message = Text(Point(400,100), "Enter a key on your keyboard of the letter you think that is in the word")
+    message.setSize(15)
+    message.setTextColor('black')
+    message.draw(win)
         
+    
+    wordLines(words_to_guess, game_rounds, win)
+
+    drawHang(win)
+        
+    
+    while game_rounds != 11 or keep_playing:
+          
+        getAnswer(words_to_guess,game_rounds,win)
+     
         #game_rounds += 1
     
     
