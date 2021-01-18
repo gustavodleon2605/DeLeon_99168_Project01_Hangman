@@ -3,6 +3,11 @@ from graphics import *
 def generateGame():
     pass
 
+def clear(win):
+    for item in win.items[:]:
+        item.undraw()
+    win.update()
+    
 def drawHangman(win,wrongAnswers):
     
     if wrongAnswers == 1:
@@ -34,7 +39,20 @@ def drawHangman(win,wrongAnswers):
         #Arm 2
         arm2 = Line(Point(175, 310), Point(200,290))
         arm2.draw(win)
-    
+        
+        #Xeyes
+        xeyel1 = Line(Point(165,243), Point(172,250))
+        xeyel1.draw(win)
+        
+        xeyel2 = Line(Point(165,250), Point(172,243))
+        xeyel2.draw(win)
+        
+        xeyel3 = Line(Point(180, 243), Point(187,250))
+        xeyel3.draw(win)
+        
+        xeyel4 = Line(Point(180, 250), Point(187,243))
+        xeyel4.draw(win)
+
 def drawHang(win):
     hangBase =  Line(Point(75,400), Point(200,400))
     hangBase.draw(win)
@@ -48,7 +66,6 @@ def drawHang(win):
     hangPoint = Line(Point(175,200), Point(175,230))
     hangPoint.draw(win)
     
-#wordlines va a necesitar un counter despues para que varie la word_to_guess
 def wordLines(words_to_guess, game_rounds, win):
     xi = 300
     x = 340
@@ -109,43 +126,43 @@ def checkKeyEntered(words_to_guess, game_rounds, guess):
     return letter_is, idx
 
 def wrongGuess(guess,wrongAnswers,win):
+    x = 400
+    i = 0
     
     if wrongAnswers == 1:
-        message = Text(Point(355,370), "Wrong guess: ")
+        message = Text(Point(355,300), "Wrong guess: ")
         message.setSize(16)
         message.setTextColor('black')
         message.draw(win)
-        x = 410
+     
+    while i < wrongAnswers:
+        x += 15
+        i += 1
     
-    wrongLetter = Text(Point(x,370), guess)
+    wrongLetter = Text(Point(x,300), guess)
     wrongLetter.setSize(16)
     wrongLetter.setTextColor('black')
     wrongLetter.draw(win)
-    x += 5
+    coma = Text(Point(x+7,300), ",")
+    coma.draw(win)
         
-def getAnswer(words_to_guess,game_rounds,win): #en un while mientras wrongAnswer != 6
+def getAnswer(words_to_guess,game_rounds,win):
     
     wrongAnswers = 0
     correctAnswers = 0
     
-    while wrongAnswers != 6 or correctAnswers != len(words_to_guess[game_rounds]): 
+    while wrongAnswers != 6 and correctAnswers != len(words_to_guess[game_rounds]): 
         
+        print(len(words_to_guess[game_rounds]))
         guess = win.getKey()
         print(guess)
-
-        is_letter, idx = checkKeyEntered(words_to_guess, game_rounds, guess)
         
-        message = Text(Point(500,300), "Press a letter key!")
-        message.setSize(12)
-        message.setTextColor('green')
-        message.draw(win)
-
+        is_letter, idx = checkKeyEntered(words_to_guess, game_rounds, guess)
+            
         if is_letter == True:
+           
             correctAnswers += 1
             print('correctAnswers:',correctAnswers)
-            message.setText('Congratulations! The letter entered is in the word to guess!')
-            message.setTextColor('green')
-            #message.draw(win)
 
             writeLetterIn(idx, guess, win)
 
@@ -153,43 +170,88 @@ def getAnswer(words_to_guess,game_rounds,win): #en un while mientras wrongAnswer
             wrongAnswers += 1
             drawHangman(win,wrongAnswers)
             wrongGuess(guess,wrongAnswers,win)
-            message.setText('Sorry! The letter entered is not the word to guess!')
-            message.setTextColor('red')
-            #message.draw(win)
                 
+    if correctAnswers ==  len(words_to_guess[game_rounds]):
+        winmsg = Text(Point(465,385),'Congratulations! You guessed the word!')
+        winmsg.setTextColor('green')
+        winmsg.setSize(20)
+        winmsg.draw(win)
+    
+    elif wrongAnswers == 6:
+        losemsg = Text(Point(465,385),"Sorry!, you didn't guessed the word!")
+        losemsg.setTextColor('red')
+        losemsg.setSize(20)
+        losemsg.draw(win)
 
 def main():
     
-    words_to_guess = ["python","border","image","film","promise","kids","lungs","doll","rhyme","damage","plants"]
+    words_to_guess = ["python","image","film","promise","kids","lungs","rhyme","plants"]
     game_rounds = 0
     
     keep_playing = True
     
-    win = GraphWin('Hangman', 800, 600)    
+    win = GraphWin('Hangman Game', 800, 600)
     
-    message = Text(Point(400,60), "HANGMAN!")
-    message.setSize(35)
-    message.setTextColor('Grey')
-    message.setStyle('bold')
-    message.draw(win)
     
-    message = Text(Point(400,100), "Enter a key on your keyboard of the letter you think that is in the word")
-    message.setSize(15)
-    message.setTextColor('black')
-    message.draw(win)
         
+    while game_rounds != 8 and keep_playing:
+        
+            
     
-    wordLines(words_to_guess, game_rounds, win)
+        message = Text(Point(400,60), "HANGMAN!")
+        message.setSize(35)
+        message.setTextColor('Grey')
+        message.setStyle('bold')
+        message.draw(win)
 
-    drawHang(win)
+        message = Text(Point(405,100), "Enter a key on your keyboard of the letter you think that is in the word")
+        message.setSize(15)
+        message.setTextColor('black')
+        message.draw(win)
+
+        message = Text(Point(405,120), "You'll have until the hangman is completely drawn (6 chances)")
+        message.setSize(15)
+        message.setTextColor('black')
+        message.draw(win)
         
-    
-    while game_rounds != 11 or keep_playing:
+        message = Text(Point(405,160), 'Round: ')
+        message.setSize(20)
+        message.setStyle('bold')
+        message.setTextColor('black')
+        message.draw(win)
+        
+        message = Text(Point(450,160), str(game_rounds+1))
+        message.setSize(20)
+        message.setStyle('bold')
+        message.setTextColor('black')
+        message.draw(win)
+
+        wordLines(words_to_guess, game_rounds, win)
+
+        drawHang(win)
+        
+        l = win.getMouse()
+        print(l)
           
         getAnswer(words_to_guess,game_rounds,win)
-     
-        #game_rounds += 1
-    
+        
+        alert = Text(Point(400,500),"Do you want to play another round? (Enter 'y' for yes or 'n' for no)") 
+        alert.setSize(20)
+        alert.draw(win)
+        
+        decision = win.getKey()
+        print(decision)
+        
+        if decision == 'y':
+            game_rounds += 1
+            print(" game_rounds",game_rounds)
+            
+            clear(win)
+        else:
+            keep_playing = False
+            win.close()
+            
+    win.close()
     
 main()
 
