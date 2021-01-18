@@ -6,4 +6,4 @@ The game developed is an interactive version of the popular classic game named H
 
 It was developed using the python library graphics.
 
-The main algorithm used to design the game was the insert type since along the game, the user was prompt to keep entering letters until he has guessed the ones that were part of the word. When winning he was also promted to enter a decision value wether to keep playing or stop. The code has various functions that work with each other to pass values and keed running the game.
+The main algorithm used to design the game was of insert type since along the game, the user was prompt to keep entering letters until he has guessed the ones that were part of the word. When winning he was also promted to enter a decision value wether to keep playing or stop. The code has various functions that work with each other to pass values and keed running the game.
