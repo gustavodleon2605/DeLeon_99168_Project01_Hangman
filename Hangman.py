@@ -1,9 +1,9 @@
 from graphics import *
 
 def generateGame(win,game_rounds,words_to_guess):
-    message = Text(Point(400,60), "HANGMAN!")
+    message = Text(Point(400,60), "HANGMAN")
     message.setSize(35)
-    message.setTextColor('Grey')
+    message.setTextColor('black')
     message.setStyle('bold')
     message.draw(win)
 
