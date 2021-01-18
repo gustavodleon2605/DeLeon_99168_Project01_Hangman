@@ -40,7 +40,7 @@ def generateGame(win,game_rounds,words_to_guess):
     alert.draw(win)
         
     decision = win.getKey()
-    print(decision)
+
     return decision
 
 def clear(win):
@@ -229,7 +229,6 @@ def main():
 
         if decision == 'y':
             game_rounds += 1
-            print(" game_rounds",game_rounds)
             clear(win)
 
         else:
