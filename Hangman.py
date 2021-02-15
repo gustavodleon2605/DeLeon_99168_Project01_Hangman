@@ -236,8 +236,7 @@ def main():
             win.close()
             
     win.close()
-    
-main()
+
 
 if __name__ == "__main__":
     main()
